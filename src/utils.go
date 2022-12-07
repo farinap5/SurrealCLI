@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cheynewallace/tabby"
+	"golang.org/x/term"
 	"os"
+	"syscall"
 )
 
 func HandErrs(e error) {
@@ -58,9 +60,8 @@ func (s *SurrDB) SetVars(v string, n string) {
 	if v == "user" || v == "User" {
 		s.User = n
 		println("[\u001B[1;32mOK\u001B[0;0m]- Use <- " + s.User)
-	} else if v == "pass" || v == "Pass" {
-		s.Pass = n
-		println("[\u001B[1;32mOK\u001B[0;0m]- Pass <- ********")
+		s.Pass = GetNoEchos("[password:" + s.User + "]: ")
+		print("\n")
 	} else if v == "host" || v == "Host" {
 		s.Host = n
 		println("[\u001B[1;32mOK\u001B[0;0m]- Host <- " + s.Host)
@@ -95,8 +96,17 @@ func (s SurrDB) TestConnection() {
 	if c == 200 {
 		println("[\u001B[1;32mOK\u001B[0;0m]- Connection is OK!")
 	} else if c == 403 {
-		println("[\u001B[1;31m!\u001B[0;0m]- There was a problem with authentication.\nUse \u001B[33m.set user <username>\u001B[0m and \u001B[33m.set pass <password>\u001B[0m to reset credentials.")
+		println("[\u001B[1;31m!\u001B[0;0m]- There was a problem with authentication.\nUse \u001B[33m.set user <username>\u001B[0m to reset credentials.")
 	} else {
 		println("[\u001B[1;31m!\u001B[0;0m]- Error!")
 	}
+}
+
+func GetNoEchos(s string) string {
+	fmt.Print(s)
+	bytepw, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		os.Exit(1)
+	}
+	return string(bytepw)
 }

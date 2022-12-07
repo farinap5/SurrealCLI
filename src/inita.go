@@ -18,7 +18,13 @@ func InitA() {
 	var pret = flag.Bool("pretty", true, "Pretty print.")
 
 	flag.Parse()
-	p := *pass
+	var p string
+	if *pass == "hide" {
+		p = GetNoEchos("[password:" + *user + "]: ")
+		print("\n")
+	} else {
+		p = *pass
+	}
 	s := SurrDB{
 		User:      *user,
 		Pass:      p,
