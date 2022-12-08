@@ -12,11 +12,11 @@ func InitA() {
 	var db = flag.String("db", "surr", "Database.")
 	var ns = flag.String("ns", "surr", "Namespace.")
 	var sch = flag.String("sc", "http", "Schema http|https")
+	var qry = flag.String("q", "none", "Run query.")
 
 	var cop = flag.Int("comp", 5, "Completion/suggestions. Set 0 for disable.")
 	var tout = flag.Int("t", 5, "Timeout.")
 	var pret = flag.Bool("pretty", true, "Pretty print.")
-
 	flag.Parse()
 	var p string
 	if *pass == "hide" {
@@ -37,5 +37,12 @@ func InitA() {
 		Timeout: time.Duration(*tout),
 		Pretty:  *pret,
 	}
-	s.InitCLI()
+
+	if *qry == "none" {
+		// if no query from command line enter interactive mode
+		DBFileInit()
+		s.InitCLI()
+	} else {
+		s.ContactSurr(*qry)
+	}
 }

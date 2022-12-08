@@ -38,6 +38,12 @@ func (s *SurrDB) execute(p string) {
 		s.Options()
 	} else if ps[0] == ".set" && len(ps) == 3 {
 		s.SetVars(ps[1], ps[2])
+	} else if ps[0] == ".save" {
+		s.savecommands(ps, p)
+	} else if ps[0] == ".delete" {
+		delete(ps)
+	} else if ps[0] == ".show" {
+		showstorage(ps)
 	} else {
 		s.ContactSurr(p)
 	}
@@ -63,6 +69,35 @@ func completer(d prompt.Document) []prompt.Suggest {
 		{Text: ".help", Description: "Show help menu"},
 		{Text: ".options", Description: "Env variables"},
 		{Text: ".set", Description: "Set variable"},
+		{Text: ".save", Description: "Save"},
+		{Text: ".show", Description: "Save"},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
+}
+
+func (s SurrDB) savecommands(ps []string, p string) {
+	switch ps[1] {
+	case "profile":
+		s.DBSaveProfile(ps[2])
+	default:
+		PrintErr("Not a command.")
+	}
+}
+
+func showstorage(ps []string) {
+	switch ps[1] {
+	case "profiles":
+		DBShowProfiles()
+	default:
+		PrintErr("Not a command.")
+	}
+}
+
+func delete(ps []string) {
+	switch ps[1] {
+	case "profile":
+		DBDropIdx(ps[2])
+	default:
+		PrintErr("Not a command.")
+	}
 }

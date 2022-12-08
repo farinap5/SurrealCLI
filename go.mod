@@ -5,6 +5,7 @@ go 1.18
 require (
 	github.com/c-bata/go-prompt v0.2.6
 	github.com/cheynewallace/tabby v1.1.1
+	github.com/mattn/go-sqlite3 v1.14.16
 	golang.org/x/term v0.3.0
 )
 

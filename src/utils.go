@@ -10,6 +10,14 @@ import (
 	"syscall"
 )
 
+func PrintErr(s string) {
+	println("[\u001B[1;31m!\u001B[0;0m]- " + s)
+}
+
+func PrintSuc(s string) {
+	println("[\u001B[1;32mOK\u001B[0;0m]- " + s)
+}
+
 func HandErrs(e error) {
 	fmt.Println(e.Error())
 	os.Exit(1)
@@ -34,6 +42,9 @@ func Help() {
 	t.AddLine(".help", "Show help menu")
 	t.AddLine(".options", "Env variables")
 	t.AddLine(".set", "Set variable")
+	t.AddLine(".save", "Save profile")
+	t.AddLine(".show", "Show profile")
+	t.AddLine(".delete", "delete profile")
 	print("\n")
 	t.Print()
 	print("\n")
