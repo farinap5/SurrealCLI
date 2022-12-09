@@ -6,8 +6,7 @@ import (
 )
 
 func (s *SurrDB) InitCLI() {
-	println("######  \033[33mSurrealCLI\033[0m  ######")
-	println("Type `.help` for help meu.")
+	Banner()
 	s.TestConnection()
 	print("\n")
 	p := prompt.New(
@@ -44,7 +43,10 @@ func (s *SurrDB) execute(p string) {
 		delete(ps)
 	} else if ps[0] == ".show" {
 		showstorage(ps)
+	} else if ps[0] == ".run" {
+		s.run(ps, p)
 	} else {
+		s.Query = p
 		s.ContactSurr(p)
 	}
 }
@@ -71,6 +73,7 @@ func completer(d prompt.Document) []prompt.Suggest {
 		{Text: ".set", Description: "Set variable"},
 		{Text: ".save", Description: "Save"},
 		{Text: ".show", Description: "Save"},
+		{Text: ".delete", Description: "Save"},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
@@ -79,6 +82,25 @@ func (s SurrDB) savecommands(ps []string, p string) {
 	switch ps[1] {
 	case "profile":
 		s.DBSaveProfile(ps[2])
+	case "query":
+		s.DBSaveQuery(ps[2])
+	default:
+		PrintErr("Not a command.")
+	}
+}
+
+func (s *SurrDB) run(ps []string, p string) {
+	switch ps[1] {
+	case "profile":
+		s.DBSetProfileByIdx(ps[2])
+	case "query":
+		q, e := DBGetQueryByIdx(ps[2])
+		if e {
+			PrintSuc("Running ")
+			s.ContactSurr(q)
+		} else {
+			PrintErr("Error searching query name.")
+		}
 	default:
 		PrintErr("Not a command.")
 	}
@@ -88,6 +110,8 @@ func showstorage(ps []string) {
 	switch ps[1] {
 	case "profiles":
 		DBShowProfiles()
+	case "queries":
+		DBShowQueries()
 	default:
 		PrintErr("Not a command.")
 	}
@@ -97,6 +121,8 @@ func delete(ps []string) {
 	switch ps[1] {
 	case "profile":
 		DBDropIdx(ps[2])
+	case "query":
+		DBDropQueryIdx(ps[2])
 	default:
 		PrintErr("Not a command.")
 	}

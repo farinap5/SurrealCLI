@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/cheynewallace/tabby"
 	"golang.org/x/term"
 	"os"
 	"syscall"
@@ -34,37 +33,6 @@ func (s SurrDB) PrettyPrint(p string) {
 
 func (s SurrDB) Print(p string) {
 	fmt.Printf("%s\n", p)
-}
-
-func Help() {
-	t := tabby.New()
-	t.AddHeader("COMMAND", "DESCRIPTION")
-	t.AddLine(".help", "Show help menu")
-	t.AddLine(".options", "Env variables")
-	t.AddLine(".set", "Set variable")
-	t.AddLine(".save", "Save profile")
-	t.AddLine(".show", "Show profile")
-	t.AddLine(".delete", "delete profile")
-	print("\n")
-	t.Print()
-	print("\n")
-}
-
-func (s SurrDB) Options() {
-	t := tabby.New()
-	t.AddHeader("VARIABLE", "VALUE")
-	t.AddLine("Host", s.Host)
-	t.AddLine("User", s.User)
-	t.AddLine("Namespace", s.Namespace)
-	t.AddLine("Database", s.Database)
-
-	t.AddLine("Schema", s.Schema)
-	t.AddLine("Pretty", s.Pretty)
-	t.AddLine("Timeout", s.Timeout)
-	t.AddLine("Suggestion", s.Comple)
-	print("\n")
-	t.Print()
-	print("\n")
 }
 
 func (s *SurrDB) SetVars(v string, n string) {

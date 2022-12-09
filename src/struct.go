@@ -14,4 +14,6 @@ type SurrDB struct {
 	Pretty  bool
 	Timeout time.Duration
 	Comple  int
+
+	Query string
 }

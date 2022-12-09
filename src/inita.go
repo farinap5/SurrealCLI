@@ -13,14 +13,18 @@ func InitA() {
 	var ns = flag.String("ns", "surr", "Namespace.")
 	var sch = flag.String("sc", "http", "Schema http|https")
 	var qry = flag.String("q", "none", "Run query.")
+	var prof = flag.String("profile", "none", "Use existent profile.")
 
 	var cop = flag.Int("comp", 5, "Completion/suggestions. Set 0 for disable.")
 	var tout = flag.Int("t", 5, "Timeout.")
 	var pret = flag.Bool("pretty", true, "Pretty print.")
+
+	flag.Usage = HelpCMD
 	flag.Parse()
+
 	var p string
 	if *pass == "hide" {
-		p = GetNoEchos("[password:" + *user + "]: ")
+		p = GetNoEchos("[password]: ")
 		print("\n")
 	} else {
 		p = *pass
@@ -32,15 +36,18 @@ func InitA() {
 		Namespace: *ns,
 		Database:  *db,
 		Host:      *host,
-
-		Comple:  *cop,
-		Timeout: time.Duration(*tout),
-		Pretty:  *pret,
+		Comple:    *cop,
+		Timeout:   time.Duration(*tout),
+		Pretty:    *pret,
+	}
+	DBFileInit()
+	if *prof != "none" {
+		// if passing profile, use it
+		s.DBSetProfileByIdx(*prof)
 	}
 
 	if *qry == "none" {
 		// if no query from command line enter interactive mode
-		DBFileInit()
 		s.InitCLI()
 	} else {
 		s.ContactSurr(*qry)

@@ -113,10 +113,12 @@ func dbdropall() {
 	}
 }
 
+// ######################### Work with profiles
+
 func (s SurrDB) DBSaveProfile(name string) {
 	x := DBValidIndex(name)
 	if x {
-		PrintErr("Profile exists.")
+		PrintErr("Profile name exists.")
 		return
 	}
 	sttm, err := DBconn.Prepare(`
@@ -139,7 +141,7 @@ func DBShowProfiles() {
 		HandErrs(err)
 	} else {
 		t := tabby.New()
-		t.AddHeader("ID", "NAME", "HOST", "PROTOCOL", "USER", "NAMESPACE", "DATABASE", "DATE")
+		t.AddHeader("ID", "NAME", "HOST", "PROTOCOL", "USER", "NAMESPACE", "DATABASE", "CREATION DATE")
 		for rw.Next() {
 			var pid int
 			var Idx, Host, Sch, DBUser, NS, DB, Date string
@@ -180,4 +182,107 @@ func DBDropIdx(i string) {
 		sttm.Exec(i)
 		PrintSuc(i + " deleted.")
 	}
+}
+
+func (s *SurrDB) DBSetProfileByIdx(i string) {
+	if !DBValidIndex(i) {
+		PrintErr("No profile.")
+		return
+	} else {
+		var Host, Sch, DBUser, NS, DB string
+		sttm := DBconn.QueryRow(`SELECT Host,Sch,DBUser,NS,DB FROM Profile WHERE Idx=?;`, i)
+		sttm.Scan(&Host, &Sch, &DBUser, &NS, &DB)
+		s.Host = Host
+		s.Schema = Sch
+		s.User = DBUser
+		s.Namespace = NS
+		s.Database = DB
+	}
+}
+
+// ######################### Work with queries
+
+func (s SurrDB) DBSaveQuery(i string) {
+	if s.Query == "" {
+		PrintErr("No query to save.")
+		return
+	}
+	x := DBValidQueryIndex(i)
+	if x {
+		PrintErr("Query name exists.")
+		return
+	}
+	sttm, err := DBconn.Prepare(`
+		INSERT INTO SQuery (Idx,Query) VALUES (?,?);
+	`)
+	if err != nil {
+		HandErrs(err)
+	}
+	_, err = sttm.Exec(i, s.Query)
+	if err != nil {
+		HandErrs(err)
+	} else {
+		PrintSuc("Query saved.")
+	}
+}
+
+func DBValidQueryIndex(i string) bool {
+	var pid int = 0
+	rw := DBconn.QueryRow("SELECT qid FROM SQuery WHERE Idx=?;", i)
+	err := rw.Scan(&pid)
+	if err != nil {
+		return false
+	} else {
+		if pid == 0 {
+			return false
+		} else {
+			return true
+		}
+	}
+}
+
+func DBShowQueries() {
+	rw, err := DBconn.Query(`SELECT qid,Idx,Query Date FROM SQuery;`)
+	if err != nil {
+		HandErrs(err)
+	} else {
+		t := tabby.New()
+		t.AddHeader("ID", "NAME", "QUERY")
+		for rw.Next() {
+			var qid int
+			var Idx, Query string
+			rw.Scan(&qid, &Idx, &Query)
+			t.AddLine(qid, Idx, Query)
+		}
+		print("\n")
+		t.Print()
+		print("\n")
+	}
+}
+
+func DBDropQueryIdx(i string) {
+	x := DBValidQueryIndex(i)
+	if !x {
+		PrintErr("Query do not exists.")
+		return
+	}
+	sttm, err := DBconn.Prepare("DELETE FROM SQuery WHERE Idx=?")
+	if err != nil {
+		HandErrs(err)
+	} else {
+		sttm.Exec(i)
+		PrintSuc(i + " deleted.")
+	}
+}
+
+func DBGetQueryByIdx(i string) (string, bool) {
+	x := DBValidQueryIndex(i)
+	if !x {
+		PrintErr("Query do not exists.")
+		return "", false
+	}
+	rw := DBconn.QueryRow(`SELECT Query Date FROM SQuery;`)
+	var q string
+	rw.Scan(&q)
+	return q, true
 }
