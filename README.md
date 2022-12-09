@@ -1,13 +1,21 @@
 # SurrealCLI
-SurrealDB CLI tool.
 
+SurrealCLI is client command line tool for managing [SurrealDB](https://surrealdb.com/). It supports many types of usages as interactive mode and noninteractive use, which lets you pass your query through the command line.
+
+SurrealCLI allows you to manage several profiles and then connect to another database without opening another terminal or leaving your current session.
+
+It even has **autocomplete** and **suggestions** feature which can be managed as well.
+
+![img.png](img/img.png)
+
+It is just download and run (if you have Golang env configured).
 ```bash
 git clone https://github.com/farinap5/SurrealCLI.git
 cd SurrealCLI
 go build SurrealCLI
 ```
-
-Normal connection:
+**Normal Connection**
+In this case, as you are not passing the password as argument you'll need to enter your password in response to the prompt that SurrealCLI displays:
 ```
 surrcli -host "0.0.0.0:80" -u elf -ns surr -db surr -comp 0              
 [password]: 
@@ -15,8 +23,10 @@ surrcli -host "0.0.0.0:80" -u elf -ns surr -db surr -comp 0
 Type `.help` for help meu.
 v 0.3-NotStable
 [OK]- Connection is OK!
-
-[surr]> INFO FOR DB
+```
+After receiving the feedback, it is ready to type the SurrealQL statements:
+```
+[surr]> INFO FOR DB;
 [
   {
     "time": "273.293µs",
@@ -24,6 +34,7 @@ v 0.3-NotStable
     "result": {
 ...
 ```
+Typing **Control-D** interrupts the prompt.
 
 ### Help Menu
 ```
@@ -43,6 +54,7 @@ COMMAND   DESCRIPTION                 DEFAULT
 -comp     Number of suggestions       5
 ```
 
+![img.png](img/img1.png)
 
 ```
 [surr]> .help
@@ -83,7 +95,9 @@ Suggestion  5
 [surr]> 
 ```
 
-Profile does not keep password, it is needed to be passed as parameter.
+It is possible to have profiles from several databases saved, you can switch connections by applying a `.run profile xxx`, and you will be communicating with another database. Or you can pass a saved profile to connect to as argument.
+
+Profile does not keep password.
 ```
 ╰─$ surrcli -profile test -p $PXX -q "INFO FOR DB;"
 [

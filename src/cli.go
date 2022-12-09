@@ -71,9 +71,9 @@ func completer(d prompt.Document) []prompt.Suggest {
 		{Text: ".help", Description: "Show help menu"},
 		{Text: ".options", Description: "Env variables"},
 		{Text: ".set", Description: "Set variable"},
-		{Text: ".save", Description: "Save"},
-		{Text: ".show", Description: "Save"},
-		{Text: ".delete", Description: "Save"},
+		{Text: ".save", Description: "Save profile|query"},
+		{Text: ".show", Description: "Show profiles|queries"},
+		{Text: ".delete", Description: "Delete a profile|query"},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
