@@ -2,7 +2,7 @@ package src
 
 import "github.com/cheynewallace/tabby"
 
-var Version string = "0.3-NotStable"
+var Version string = "0.4-NotStable"
 
 func Banner() {
 	println("######  \033[33mSurrealCLI\033[0m  ######")

@@ -17,3 +17,9 @@ type SurrDB struct {
 
 	Query string
 }
+
+type Payload struct {
+	Time   string      `json:"time"`
+	Status string      `json:"status"`
+	Result interface{} `json:"result"`
+}

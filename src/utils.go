@@ -1,10 +1,12 @@
 package src
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"golang.org/x/term"
+	"io"
 	"os"
 	"syscall"
 )
@@ -30,6 +32,27 @@ func (s SurrDB) PrettyPrint(p string) {
 	}
 	fmt.Printf("%s\n", out.String())
 }
+
+/*func GetPayload(j string) {
+	println(j)
+	data := []Payload{}
+	err := json.Unmarshal([]byte(j), &data)
+	if err != nil {
+		HandErrs(err)
+	}
+	x, err := json.Marshal(data[0].Result)
+	if err != nil {
+		HandErrs(err)
+	}
+	fmt.Println(string(x))
+	tableprinter.PrintJSON(os.Stdout, x)
+
+}
+
+func PrettyTable() {
+	printer := tableprinter.New(os.Stdout)
+	printer.PrintJSON()
+}*/
 
 func (s SurrDB) Print(p string) {
 	fmt.Printf("%s\n", p)
@@ -88,4 +111,28 @@ func GetNoEchos(s string) string {
 		os.Exit(1)
 	}
 	return string(bytepw)
+}
+
+func FromSTDIN() (string, bool) {
+	//var sin bool
+	f, err := os.Stdin.Stat()
+	if err != nil {
+		HandErrs(err)
+	}
+
+	if f.Mode()&os.ModeNamedPipe == 0 {
+		return "", false
+	} else {
+		read := bufio.NewReader(os.Stdin)
+		var output []rune
+
+		for {
+			input, _, err := read.ReadRune()
+			if err != nil && err == io.EOF {
+				break
+			}
+			output = append(output, input)
+		}
+		return string(output), true
+	}
 }

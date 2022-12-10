@@ -46,6 +46,14 @@ func InitA() {
 		s.DBSetProfileByIdx(*prof)
 	}
 
+	// Get data from stdin
+	sin, e := FromSTDIN()
+	// if stdin execute it
+	if e {
+		s.ContactSurr(sin)
+		return
+	}
+
 	if *qry == "none" {
 		// if no query from command line enter interactive mode
 		s.InitCLI()

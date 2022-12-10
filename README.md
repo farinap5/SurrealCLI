@@ -109,3 +109,18 @@ Profile does not keep password.
       "dt": {},
 ...
 ```
+
+SurrealCLI supports data being passed through stdin:
+```
+╰─$ echo "select * from person;" | go run main.go -profile test -p $PASS
+[
+  {
+    "time": "438.374µs",
+    "status": "OK",
+    "result": [
+      {
+        "id": "person:cxnpkua4g13nd6vjmypl",
+        "name": "Person1"
+      },
+...
+```
