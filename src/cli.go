@@ -1,8 +1,10 @@
 package src
 
 import (
-	"github.com/c-bata/go-prompt"
+	//"fmt"
 	"strings"
+
+	"github.com/c-bata/go-prompt"
 )
 
 func (s *SurrDB) InitCLI() {
@@ -74,6 +76,10 @@ func completer(d prompt.Document) []prompt.Suggest {
 		{Text: ".save", Description: "Save profile|query"},
 		{Text: ".show", Description: "Show profiles|queries"},
 		{Text: ".delete", Description: "Delete a profile|query"},
+		{Text: ".run", Description: "Delete a profile|query"},
+
+		{Text: "query", Description: ""},
+		{Text: "profile", Description: ""},
 	}
 	return prompt.FilterHasPrefix(s, d.GetWordBeforeCursor(), true)
 }
@@ -81,8 +87,16 @@ func completer(d prompt.Document) []prompt.Suggest {
 func (s SurrDB) savecommands(ps []string, p string) {
 	switch ps[1] {
 	case "profile":
+		if len(ps) != 3 {
+			PrintErr("type `.save profile <name>`")
+			return
+		}
 		s.DBSaveProfile(ps[2])
 	case "query":
+		if len(ps) != 3 {
+			PrintErr("type `.save query <name>`")
+			return
+		}
 		s.DBSaveQuery(ps[2])
 	default:
 		PrintErr("Not a command.")
@@ -92,8 +106,16 @@ func (s SurrDB) savecommands(ps []string, p string) {
 func (s *SurrDB) run(ps []string, p string) {
 	switch ps[1] {
 	case "profile":
+		if len(ps) != 3 {
+			PrintErr("type `.run profile <name>`")
+			return
+		}
 		s.DBSetProfileByIdx(ps[2])
 	case "query":
+		if len(ps) != 3 {
+			PrintErr("type `.save query <name>`")
+			return
+		}
 		q, e := DBGetQueryByIdx(ps[2])
 		if e {
 			PrintSuc("Running ")
@@ -107,21 +129,32 @@ func (s *SurrDB) run(ps []string, p string) {
 }
 
 func showstorage(ps []string) {
+	if len(ps) != 2 {
+		PrintErr("type `.show profiles|queries`")
+	}
 	switch ps[1] {
 	case "profiles":
 		DBShowProfiles()
 	case "queries":
 		DBShowQueries()
 	default:
-		PrintErr("Not a command.")
+		PrintErr("type `.show profiles|queries`")
 	}
 }
 
 func delete(ps []string) {
 	switch ps[1] {
 	case "profile":
+		if len(ps) != 3 {
+			PrintErr("type `.delete profile <name>`")
+			return
+		}
 		DBDropIdx(ps[2])
 	case "query":
+		if len(ps) != 3 {
+			PrintErr("type `.delete query <name>`")
+			return
+		}
 		DBDropQueryIdx(ps[2])
 	default:
 		PrintErr("Not a command.")

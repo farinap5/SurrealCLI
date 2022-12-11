@@ -70,6 +70,36 @@ COMMAND   DESCRIPTION
 .run      Run profile|query
 ```
 
+The command `.options` shows the variables you can change the value.
+
+`.set` Lets you to chage the variables value, those variable shown with `.options` command, take the database addres as example so you can comunicate to another database just setting it like:
+
+```
+[surr]> .set host 1.1.1.1
+```
+
+The `.save` is used when we want to save a `profile` or `query` to use later. Typing `.save profile <any name>` will save the current connection configuration. You can connect to another database by the saved `profile` just typing `.run profile <chosen name>`
+
+Those commands (`.save` and `.run`) can be used in queries context, its possible to save a query using the command:
+
+```
+[surr]> .save query <any name>
+```
+This will save the last executed query, we can run it again just typing `.run query <chosen name>`.
+
+`.show` is used to list the saved `profiles` and `queries`.
+
+```
+[surr]> .show queries
+
+ID  NAME        QUERY
+--  ----        -----
+1   dbinfo      info for db;
+2   elffriends  select ->friend->person.name from (select id from person where name="elf");
+...
+```
+
+`.delete` delete `profile|query
 
 Authenticate with saved profile using `-profile`
 ```
