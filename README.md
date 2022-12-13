@@ -1,5 +1,7 @@
 # SurrealCLI
 
+!**Pull requests are very wellcome**!
+
 SurrealCLI is client command line tool for managing [SurrealDB](https://surrealdb.com/). It supports many types of usages as interactive mode and noninteractive use, which lets you pass your query through the command line.
 
 SurrealCLI allows you to manage several profiles and then connect to another database without opening another terminal or leaving your current session.
